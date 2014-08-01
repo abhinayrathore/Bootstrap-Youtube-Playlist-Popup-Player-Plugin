@@ -1,4 +1,7 @@
-Bootstrap-Youtube-Playlist-Popup-Player-Plugin
-==============================================
+Bootstrap Youtube Playlist Popup Player Plugin using jQuery
+=================
 
-Easy to use Bootstrap Youtube Playlist Popup Player Plugin.
+This is a popup-modal plugin for playing YouTube Playlists on Bootstrap sites. This plugin is only compatible with Bootstrap v3.0.0 and above.
+
+Demo and Documentation: lab.abhinayrathore.com/bootstrap-youtube-playlist-popup/
+------------------

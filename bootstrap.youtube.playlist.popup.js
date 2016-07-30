@@ -148,7 +148,7 @@
         this.setTitle(playlistObject[id].title);
       } else {
         getYouTubeData(id, function(youtubeId, data) {
-          data && data.entry && data.entry.title && data.entry.title.$t && Modal.setTitle(data.entry.title.$t);
+          data && data.items && data.items[0].snippet.title && Modal.setTitle(data.items[0].snippet.title);
         });
       }
     },
@@ -324,13 +324,14 @@
 
     populatePopoverList: function(youtubeId, data) {
       var $videoList = $YouTubePlaylistModal.find('.list-popover-content');
-      if (data && data.entry && data.entry.title && data.entry.title.$t) {
+      if (data && data.items && data.items[0].snippet.title) {
         playlistObject[youtubeId] = playlistObject[youtubeId] || {};
-        playlistObject[youtubeId]['title'] = data.entry.title.$t;
-        playlistObject[youtubeId]['desc'] = data.entry.media$group.media$description.$t;
-        playlistObject[youtubeId]['duration'] = data.entry.media$group.yt$duration.seconds;
-        $videoList.find('.popover-video-link[data-id="' + youtubeId + '"] > h5').html(playlistObject[youtubeId]['title']);
-        $videoList.find('.popover-video-link[data-id="' + youtubeId + '"]').attr('title', playlistObject[youtubeId]['desc']);
+        playlistObject[youtubeId]['title'] = data.items[0].snippet.title;
+        playlistObject[youtubeId]['desc'] = data.items[0].snippet.title;
+        $videoList.find('.popover-video-link[data-id="' + 
+        		youtubeId + '"] > h5').html(playlistObject[youtubeId]['title']);
+        $videoList.find('.popover-video-link[data-id="' + 
+        		youtubeId + '"]').attr('title', playlistObject[youtubeId]['desc']);
       }
     },
 
@@ -340,10 +341,17 @@
   };
 
   function getYouTubeData(youtubeId, callback) {
-    var url = ["https://gdata.youtube.com/feeds/api/videos/", youtubeId, "?v=2&alt=json"].join('');
+	  var url = [
+	 			'https://www.googleapis.com/youtube/v3/videos?id=',
+	 			youtubeId, 
+	 			'&maxResults=50',
+	 			'&part=snippet',
+	 			'&fields=items(snippet(title))',
+	 			'&key=', _options.apiKey
+	 		].join('');
     $.ajax({
       url: url,
-      dataType: 'jsonp',
+      dataType: 'json',
       cache: true,
       success: function(data) {
         callback.call(this, youtubeId, data);
@@ -365,6 +373,7 @@
   $.fn.YouTubePlaylistModal.defaults = {
     playList: '',
     title: '',
+    apiKey: '',
     cssClass: 'YouTubePlaylistModal',
     width: 640,
     height: 480,
